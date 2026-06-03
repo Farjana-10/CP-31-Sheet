@@ -2,7 +2,10 @@
 using namespace std;
 
 #pragma region Macros
-#define Faster ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+#define Faster                        \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(0);                       \
+    cout.tie(0);
 #define ll long long
 #define ld long double
 #define pii pair<int, int>
@@ -24,46 +27,49 @@ ll gcd(ll a, ll b) { return __gcd(a, b); }
 ll lcm(ll a, ll b) { return (a / gcd(a, b)) * b; }
 #pragma endregion
 
-void solve() {
-    int n;  cin>>n;
-    vector<ll>v(n);
-    for(auto &it:v)
-        cin>>it;
-
-    ll sum=v[0], curr=v[0], ans=v[0], cnt=1, c=0; 
-    for(int i=1;i<n;i++){
-        if (v[i]<curr+v[i]){
-            curr+=v[i];
-            cnt++;
-        }
-        else {
-            curr=v[i];
-            cnt=1;
-        }
-        if(ans<curr){
-            ans=curr;
-            c=cnt;
-        }
-        
-        sum+=v[i];
+ll kadane(vector<ll> &v, int l, int r)
+{
+    ll curr = 0;
+    ll mx = LLONG_MIN;
+    for (int i = l; i <= r; i++)
+    {
+        curr += v[i];
+        mx = max(mx, curr);
+        if (curr < 0)
+            curr = 0;
     }
-    if(sum==ans){
-        if(c==n) yes;
-        else no;
-    }
-    else if(sum>ans){
-        if(c!=n) yes;
-        else no;
-    }
-    else{
-        no;
-    }
+    return mx;
 }
 
-int main() {
+void solve()
+{
+    int n;
+    cin >> n;
+
+    vector<ll> v(n);
+    ll sum = 0;
+
+    for (auto &it : v)
+    {
+        cin >> it;
+        sum += it;
+    }
+
+    ll mx1 = kadane(v, 0, n - 2);
+    ll mx2 = kadane(v, 1, n - 1);
+
+    if (max(mx1, mx2) < sum)
+        yes;
+    else
+        no;
+}
+
+int main()
+{
     Faster;
     int t = 1;
     cin >> t;
-    while (t--) solve();
+    while (t--)
+        solve();
     return 0;
 }
